@@ -1,5 +1,6 @@
 package com.banque.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,8 @@ public class Client extends Utilisateur implements Serializable {
     @Column(unique = true,length = 40)
     private String cin;
     @Column(length = 40)
+    private String phone;
+    @Column(length = 40)
     private String status="desactive";
     @OneToMany(mappedBy="client")
    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -28,8 +31,10 @@ public class Client extends Utilisateur implements Serializable {
    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Collection<Virement> virements;
     @ManyToOne
+    @JsonIgnore
     private Agence agence;
     @OneToMany(mappedBy = "client")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Collection<Message> messages;
+
 }

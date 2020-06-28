@@ -3,10 +3,12 @@ package com.banque.demo.web;
 import com.banque.demo.dao.*;
 import com.banque.demo.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -39,9 +41,10 @@ public class AppAgentRestController {
 
     //Consulter tous les comptes d'un client specifique
     @GetMapping(value="/agent/{id_client}/ConsulterComptes")
-    public List<Compte> comptes(@PathVariable (name="id_client") Long id_client, Principal principal){
+    public List<Compte> comptes(@PathVariable (name="id_client") Long id_client){
 
-        String username=principal.getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
         Agent agent_actuel=agentRepository.findByUsername(username);
         Agence agence_actuelle=agent_actuel.getAgence();
         List<Client> clients= (List<Client>) agence_actuelle.getClients();
@@ -53,9 +56,10 @@ public class AppAgentRestController {
     }
 
     @PostMapping(value="/agent/{id_client}/AjouterCompte")
-    public Compte ajoutercompte(@PathVariable (name="id_client") Long id_client, @RequestBody Compte compte, Principal principal){
+    public Compte ajoutercompte(@PathVariable (name="id_client") Long id_client, @RequestBody Compte compte){
 
-        String username=principal.getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
         Agent agent_actuel=agentRepository.findByUsername(username);
         Agence agence_actuelle=agent_actuel.getAgence();
         List<Client> clients= (List<Client>) agence_actuelle.getClients();
@@ -69,9 +73,10 @@ public class AppAgentRestController {
     }
 
     @PutMapping(value="/agent/{id_client}/ConsulterComptes/{id_compte}")
-    public Compte updatecompte(@PathVariable (name="id_client") Long id_client, @PathVariable (name="id_compte") Long id_compte, @RequestBody Compte compte, Principal principal){
+    public Compte updatecompte(@PathVariable (name="id_client") Long id_client, @PathVariable (name="id_compte") Long id_compte, @RequestBody Compte compte){
 
-        String username=principal.getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
         Agent agent_actuel=agentRepository.findByUsername(username);
         Agence agence_actuelle=agent_actuel.getAgence();
         List<Client> clients= (List<Client>) agence_actuelle.getClients();
@@ -91,14 +96,16 @@ public class AppAgentRestController {
         compteRepository.deleteById(id_compte);
     }
     @GetMapping(value="/agent/test")
+    @ResponseStatus(HttpStatus.OK)
     public String test(){
         return "niiiice";
     }
 
     @PostMapping(value="/agent/CreerClient")
-    public Client ajouterclient(@RequestBody Client client, Principal principal){
+    public Client ajouterclient(@RequestBody Client client){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
 
-        String username=principal.getName();
         Agent agent_actuel=agentRepository.findByUsername(username);
         Agence agence_actuelle=agent_actuel.getAgence();
         client.setAgence(agence_actuelle);
@@ -106,13 +113,15 @@ public class AppAgentRestController {
         agence_actuelle.getClients().add(client);
         agenceRepository.save(agence_actuelle);
         client.setRole("CLIENT");
-        return clientRepository.save(client);
+        Client c=clientRepository.save(client);
+        return c;
 
     }
     @PutMapping(value="/agent/{id_client}/ModifierClient")
-    public Client modifierclient(@PathVariable (name="id_client") Long id_client, @RequestBody Client client, Principal principal){
+    public Client modifierclient(@PathVariable (name="id_client") Long id_client, @RequestBody Client client){
 
-        String username=principal.getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
         Agent agent_actuel=agentRepository.findByUsername(username);
         Agence agence_actuelle=agent_actuel.getAgence();
         client.setAgence(agence_actuelle);
@@ -125,9 +134,10 @@ public class AppAgentRestController {
 
 
     @GetMapping(value="/agent/ConsulterClients")
-    public List<Client> clients(Principal principal){
+    public List<Client> clients(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
 
-        String username=principal.getName();
         Agent agent_actuel=agentRepository.findByUsername(username);
         Agence agence_actuelle=agent_actuel.getAgence();
         List<Client> clients= (List<Client>) agence_actuelle.getClients();
@@ -135,9 +145,10 @@ public class AppAgentRestController {
     }
 
     @PutMapping(value="/agent/ActiverClient/{id_client}")
-    public Client activerclient(@PathVariable (name="id_client") Long id_client, @RequestBody Client client, Principal principal){
+    public Client activerclient(@PathVariable (name="id_client") Long id_client, @RequestBody Client client){
 
-        String username=principal.getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
         Agent agent_actuel=agentRepository.findByUsername(username);
         Agence agence_actuelle=agent_actuel.getAgence();
         client.setAgence(agence_actuelle);
@@ -149,9 +160,10 @@ public class AppAgentRestController {
     }
 
     @PutMapping(value="/agent/SuspendreClient/{id_client}")
-    public Client suspendreclient(@PathVariable (name="id_client") Long id_client, @RequestBody Client client, Principal principal){
+    public Client suspendreclient(@PathVariable (name="id_client") Long id_client, @RequestBody Client client){
 
-        String username=principal.getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
         Agent agent_actuel=agentRepository.findByUsername(username);
         Agence agence_actuelle=agent_actuel.getAgence();
         client.setAgence(agence_actuelle);
@@ -164,9 +176,10 @@ public class AppAgentRestController {
 
 
     @GetMapping(value="/agent/ConsulterMessage/{id_client}")
-    public List<Message> messages(@PathVariable(name="id_client") Long id_client, Principal principal){
+    public List<Message> messages(@PathVariable(name="id_client") Long id_client){
 
-        String username=principal.getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
         Agent agent_actuel=agentRepository.findByUsername(username);
         Agence agence_actuelle=agent_actuel.getAgence();
         List<Client> clients= (List<Client>) agence_actuelle.getClients();
@@ -176,9 +189,10 @@ public class AppAgentRestController {
     }
 
     @PostMapping("/agent/ContacterClient/{id_client}")
-    public Message contacter_client(@PathVariable(name="id_client") Long id_client, @RequestBody Message message, Principal principal) {
+    public Message contacter_client(@PathVariable(name="id_client") Long id_client, @RequestBody Message message) {
 
-        String username=principal.getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
         Agent agent_actuel=agentRepository.findByUsername(username);
         Agence agence_actuelle=agent_actuel.getAgence();
         List<Client> clients= (List<Client>) agence_actuelle.getClients();
