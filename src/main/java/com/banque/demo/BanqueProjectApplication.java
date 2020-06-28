@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
-public class BanqueProjectApplication implements CommandLineRunner {
+public class BanqueProjectApplication implements CommandLineRunner  {
 
 
     @Autowired

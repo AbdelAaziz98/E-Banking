@@ -1,5 +1,6 @@
 package com.banque.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class Compte implements Serializable {
     @Column(length = 40)
     private String type;
     @ManyToOne
+    @JsonIgnore
     private Client client;
     @OneToMany(mappedBy = "compte")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

@@ -56,14 +56,14 @@ public class AppAgentRestController {
     }
 
     @PostMapping(value="/agent/{id_client}/AjouterCompte")
-    public Compte ajoutercompte(@PathVariable (name="id_client") Long id_client, @RequestBody Compte compte){
+    public Compte ajoutercompte(@PathVariable (name="id_client") String id_client, @RequestBody Compte compte){
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         Agent agent_actuel=agentRepository.findByUsername(username);
         Agence agence_actuelle=agent_actuel.getAgence();
         List<Client> clients= (List<Client>) agence_actuelle.getClients();
-        Client client_actuel=clients.get(Math.toIntExact(id_client));
+        Client client_actuel=clientRepository.getOne(Long.parseLong(id_client));
         client_actuel.setAgence(agence_actuelle);
         client_actuel.getComptes().add(compte);
         compte.setClient(client_actuel);
