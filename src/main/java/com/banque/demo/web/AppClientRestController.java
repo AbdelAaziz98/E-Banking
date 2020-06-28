@@ -6,10 +6,10 @@ import com.banque.demo.dao.MessageRepository;
 import com.banque.demo.dao.VirementRepository;
 import com.banque.demo.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -36,23 +36,27 @@ public class AppClientRestController {
     //ClientController
 
     @GetMapping("/client")
-    public Client Profil(Principal principal){
+    public Client Profil(){
 
-        String username=principal.getName();
-      return  clientRepository.findByUsername(username);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        return  clientRepository.findByUsername(username);
     }
 
     @GetMapping(value="/client/ListComptes")
-    public List<Compte> comptes(Principal principal){
-        String username=principal.getName();
-         List<Compte> mescomptes= (List<Compte>) clientRepository.findByUsername(username).getComptes();
+    public List<Compte> comptes(){
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        List<Compte> mescomptes= (List<Compte>) clientRepository.findByUsername(username).getComptes();
            return mescomptes;
 
     }
 
     @GetMapping(value="/client/ListComptes/{id_compte}")
-    public Compte ConsulterCompte(@PathVariable(name="id_compte") Long id_compte, Principal principal){
-        String username=principal.getName();
+    public Compte ConsulterCompte(@PathVariable(name="id_compte") Long id_compte){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
         Client client_actuel=clientRepository.findByUsername(username);
        List<Compte> mes_comptes= (List<Compte>) client_actuel.getComptes();
           Compte compte_actuel=mes_comptes.get(Math.toIntExact(id_compte));
@@ -62,8 +66,9 @@ public class AppClientRestController {
     }
 
     @GetMapping(value="/client/ListComptes/{id_compte}/ConsulterSolde")
-    public long ConsulterSolde(@PathVariable(name="id_compte") Long id_compte,Principal principal){
-        String username=principal.getName();
+    public long ConsulterSolde(@PathVariable(name="id_compte") Long id_compte){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
         Client client_actuel=clientRepository.findByUsername(username);
         List<Compte> mes_comptes= (List<Compte>) client_actuel.getComptes();
         Compte compte_actuel=mes_comptes.get(Math.toIntExact(id_compte));
@@ -74,9 +79,10 @@ public class AppClientRestController {
 
     
    @PostMapping("/client/ListComptes/{id_compte}/EffectuerVirement")
-    public Virement effectuerVirement(@RequestBody Virement virement, @PathVariable(name="id_compte") Long id_compte, Principal principal){
-       String username=principal.getName();
-        Client client_actuel=clientRepository.findByUsername(username);
+    public Virement effectuerVirement(@RequestBody Virement virement, @PathVariable(name="id_compte") Long id_compte){
+       Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+       String username = auth.getName();
+       Client client_actuel=clientRepository.findByUsername(username);
        //debiteur
        List<Compte> mes_comptes= (List<Compte>) client_actuel.getComptes();
        Compte compte_actuel=mes_comptes.get(Math.toIntExact(id_compte));
@@ -98,8 +104,9 @@ public class AppClientRestController {
     }
 
     @GetMapping(value="/client/ListComptes/{id_compte}/ConsulterTransactions")
-    public List<Virement> virements(@PathVariable(name="id_compte") Long id_compte, Principal principal){
-        String username=principal.getName();
+    public List<Virement> virements(@PathVariable(name="id_compte") Long id_compte){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
         Client client_actuel=clientRepository.findByUsername(username);
          List<Compte> mes_comptes= (List<Compte>) client_actuel.getComptes();
          Compte compte_actuel=mes_comptes.get(Math.toIntExact(id_compte));
@@ -109,9 +116,10 @@ public class AppClientRestController {
 
 
     @PostMapping("/client/ContacterAgent")
-    public Message contacter(@RequestBody Message message, @RequestBody Agent agent, Principal principal) {
+    public Message contacter(@RequestBody Message message, @RequestBody Agent agent) {
 
-        String username=principal.getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
         Client client_actuel=clientRepository.findByUsername(username);
         message.setAgent(agent);
         message.setClient(client_actuel);

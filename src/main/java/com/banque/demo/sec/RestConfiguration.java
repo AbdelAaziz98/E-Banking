@@ -1,6 +1,7 @@
 package com.banque.demo.sec;
 
 import com.banque.demo.entities.Client;
+import com.banque.demo.entities.Compte;
 import com.banque.demo.entities.Utilisateur;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
@@ -20,6 +21,8 @@ public class RestConfiguration extends RepositoryRestConfigurerAdapter{
         //TODO: Expose for specific entity!
         config.exposeIdsFor(Utilisateur.class);
         config.exposeIdsFor(Client.class);
+        config.exposeIdsFor(Compte.class);
+
         //config.exposeIdsFor(Position.class);
 
         //TODO: Expose id for all entities!

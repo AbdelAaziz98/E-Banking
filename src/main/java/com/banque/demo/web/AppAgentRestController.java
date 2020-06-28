@@ -39,6 +39,14 @@ public class AppAgentRestController {
 
     //AgentController
 
+    @PostMapping("agent/{id_compte}/EffectuerVirement/{montant}")
+    public Compte newCompte(@PathVariable (name="id_compte") Long id,@PathVariable(name="montant") int montant){
+        Compte compte=compteRepository.getOne(id);
+        compte.setSolde(compte.getSolde()+montant);
+       return  compteRepository.save(compte);
+    }
+
+
     //Consulter tous les comptes d'un client specifique
     @GetMapping(value="/agent/{id_client}/ConsulterComptes")
     public List<Compte> comptes(@PathVariable (name="id_client") Long id_client){
